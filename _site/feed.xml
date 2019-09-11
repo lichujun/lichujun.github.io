@@ -1,0 +1,1814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Leslie Blog</title>
+    <description>星辰和大海</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Wed, 11 Sep 2019 17:17:13 +0800</pubDate>
+    <lastBuildDate>Wed, 11 Sep 2019 17:17:13 +0800</lastBuildDate>
+    <generator>Jekyll v4.0.0</generator>
+    
+      <item>
+        <title>redis部署</title>
+        <description>&lt;h3 id=&quot;1部署单机redis&quot;&gt;1、部署单机redis&lt;/h3&gt;
+&lt;h4 id=&quot;1下载redis安装包&quot;&gt;（1）下载redis安装包&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;wget http://download.redis.io/releases/redis-4.0.10.tar.gz
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;2解压到指定文件夹&quot;&gt;（2）解压到指定文件夹&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;tar zxvf redis-4.0.10.tar.gz
+mv redis-4.0.10 /usr/local/redis/
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;3编译安装&quot;&gt;（3）编译安装&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /usr/local/redis
+make
+make install
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;4修改redis的配置文件&quot;&gt;（4）修改redis的配置文件&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;vim /usr/local/redis/redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;port 6379
+daemonize yes
+bind 0.0.0.0
+pidfile /var/run/redis_6379.pid
+cluster-enabled no
+appendonly yes
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;5启动redis&quot;&gt;（5）启动redis&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;redis-server /usr/local/redis/redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2部署redis集群&quot;&gt;2、部署redis集群&lt;/h3&gt;
+&lt;h4 id=&quot;1创建文件夹&quot;&gt;（1）创建文件夹&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;mkdir -p /usr/local/redis-cluster/{9001,9002,9003,9004,9005,9006}/data
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;2修改usrlocalredisredisconf的配置文件为集群模式如下&quot;&gt;（2）修改/usr/local/redis/redis.conf的配置文件为集群模式，如下：&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;port 9001
+daemonize yes
+bind 0.0.0.0
+dir /usr/local/redis-cluster/9001/data/
+pidfile /var/run/redis_9001.pid
+cluster-enabled yes
+cluster-config-file nodes9001.conf
+cluster-node-timeout 2000
+appendonly yes
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;3拷贝配置文件到创建的6个端口的文件夹并修改配置文件中的端口&quot;&gt;（3）拷贝配置文件到创建的6个端口的文件夹，并修改配置文件中的端口&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /usr/local/redis-cluster
+echo 9001/ 9002/ 9003/ 9004/ 9005/ 9006/ | xargs -n 1 cp -v /usr/local/redis/redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;4启动6个redis服务&quot;&gt;（4）启动6个redis服务&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;redis-server /usr/local/redis-cluster/9001/redis.conf
+redis-server /usr/local/redis-cluster/9002/redis.conf
+redis-server /usr/local/redis-cluster/9003/redis.conf
+redis-server /usr/local/redis-cluster/9004/redis.conf
+redis-server /usr/local/redis-cluster/9005/redis.conf
+redis-server /usr/local/redis-cluster/9006/redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;5安装ruby如果提示版本需要大于222需要使用rvm安装ruby&quot;&gt;（5）安装ruby，如果提示版本需要大于2.2.2，需要使用rvm安装ruby&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;yum install ruby
+yum install rubygems
+gem install redis 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;6启动集群&quot;&gt;（6）启动集群&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;/usr/local/redis/src/redis-trib.rb create --replicas 1 服务器ip:9001 服务器ip.42:9002 服务器ip:9003 服务器ip:9004 服务器ip:9005 服务器ip:9006	
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;3安装哨兵&quot;&gt;3.安装哨兵&lt;/h3&gt;
+&lt;h4 id=&quot;1创建redis实例和sentinel的目录&quot;&gt;（1）创建redis实例和sentinel的目录&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;mkdir -p /usr/local/redis-sentinel/{8001,8002,8003}/data
+mkdir -p /usr/local/redis-sentinel/sentinel
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;2修改redis主节点8001的配置文件&quot;&gt;（2）修改redis主节点8001的配置文件&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /usr/local/redis-sentinel/8001
+vim redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;# 端口
+port 8001
+
+# 注释以下内容开启远程访问
+# bind 127.0.0.1
+
+# Redis使用后台模式
+daemonize yes
+
+# 关闭保护模式
+protected-mode no
+
+# 修改pidfile指向路径
+pidfile &quot;/usr/local/redis-sentinel/redis8001.pid&quot;
+
+#日志文件
+logfile &quot;/usr/local/redis-sentinel/log/redis8001.log&quot;
+
+#数据库文件名
+dbfilename &quot;dump.rdb&quot;
+
+#数据库文存放目录
+dir &quot;/usr/local/redis-sentinel/8001/data&quot;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;3修改redis从节点8002的配置文件同理修改从节点8003的配置文件&quot;&gt;（3）修改redis从节点8002的配置文件，同理修改从节点8003的配置文件&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /usr/local/redis-sentinel/8002
+vim redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;# 端口
+port 8002
+
+# 注释以下内容开启远程访问
+# bind 127.0.0.1
+
+# Redis使用后台模式
+daemonize yes
+
+# 关闭保护模式
+protected-mode no
+
+# 修改pidfile指向路径
+pidfile &quot;/usr/local/redis-sentinel/redis8002.pid&quot;
+
+#日志文件
+logfile &quot;/usr/local/redis-sentinel/log/redis8002.log&quot;
+
+#数据库文件名
+dbfilename &quot;dump.rdb&quot;
+
+#数据库文存放目录
+dir &quot;/usr/local/redis-sentinel/8002/data&quot;
+
+# 主节点的ip和端口
+slaveof 127.0.0.1 8001
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;4启动主从节点&quot;&gt;（4）启动主从节点&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;/usr/local/redis/redis-server /usr/local/redis-sentinel/8001/redis.conf
+/usr/local/redis/redis-server /usr/local/redis-sentinel/8002/redis.conf
+/usr/local/redis/redis-server /usr/local/redis-sentinel/8003/redis.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;5修改sentinel的9001节点的配置文件同理添加9002节点的配置文件&quot;&gt;（5）修改sentinel的9001节点的配置文件，同理添加9002节点的配置文件&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /usr/local/redis-sentinel/sentinel
+vim sentinel_9001.conf
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;#添加为后台运行
+daemonize yes
+##这里从服务1的默认端口我们不动 稍后修改从2即可
+port 9001
+##这里配置写上主服务器IP 端口 2个sentinel选举成功后才有效
+sentinel monitor mymaster 127.0.0.1 8001 2
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;6启动sentinel节点&quot;&gt;（6）启动sentinel节点&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;/usr/local/redis/redis-server /usr/local/redis-sentinel/sentinel/sentinel_9001.conf --sentinel
+/usr/local/redis/redis-server /usr/local/redis-sentinel/sentinel/sentinel_9002.conf --sentinel
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Thu, 02 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/redis/2019/05/02/redis%E9%83%A8%E7%BD%B2/</link>
+        <guid isPermaLink="true">http://localhost:4000/redis/2019/05/02/redis%E9%83%A8%E7%BD%B2/</guid>
+        
+        <category>redis</category>
+        
+        
+        <category>redis</category>
+        
+      </item>
+    
+      <item>
+        <title>Spring AOP统一打印日志</title>
+        <description>&lt;h3 id=&quot;一定义注解&quot;&gt;一、定义注解&lt;/h3&gt;
+
+&lt;h4 id=&quot;1-创建注解注解作用域只在方法上&quot;&gt;1. 创建注解，注解作用域只在方法上&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ServerLog {
+    // 方法入参描述
+    String reqDesc() default &quot;&quot;;
+    // 方法出参描述
+    String resDesc() default &quot;&quot;;
+    // 日志打印范围，默认全打印
+    LogRange logRange() default LogRange.ALL;
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;2-定义logrange枚举类定义打印日志的范围&quot;&gt;2. 定义LogRange枚举类，定义打印日志的范围&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;@Getter
+@AllArgsConstructor
+public enum LogRange {
+    // 出入参都不打印日志
+    NONE(false, false),
+    // 入参打印日志
+    REQ(true, false),
+    // 出参打印日志
+    RES(false, true),
+    // 出入参都打印日志
+    ALL(true, true),
+    ;
+    private boolean printReq;
+    private boolean printRes;
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;二aop拦截日志注解&quot;&gt;二、AOP拦截日志注解&lt;/h3&gt;
+
+&lt;h4 id=&quot;1-拦截日志注解&quot;&gt;1. 拦截日志注解&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;@Around(value = &quot;@annotation(serverLog)&quot;, argNames = &quot;joinPoint,serverLog&quot;)
+public Object printLog(ProceedingJoinPoint joinPoint, ServerLog serverLog) throws Throwable {
+    LogRange logRange = serverLog.logRange();
+    if (logRange.isPrintReq()) {
+        String reqDesc = serverLog.reqDesc();
+      	// 通过CodeSignature获取参数名称
+        CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
+        String[] parameterNames = codeSignature.getParameterNames();
+      	// 如果参数数组不为空，则打印参数名称和参数实体
+        if (ArrayUtils.isNotEmpty(parameterNames)) {
+            StringBuilder logMessage = new StringBuilder(reqDesc);
+            Object[] parameterMessages = new Object[parameterNames.length * 2];
+            Object[] parameterObjs = joinPoint.getArgs();
+            for (int i = 0; i &amp;lt; parameterNames.length; i++) {
+                logMessage.append(LOG_BLOCK);
+                parameterMessages[2 * i] = parameterNames[i];
+                parameterMessages[2 * i + 1] = JSON.toJSONString(parameterObjs[i]);
+            }
+            log.info(logMessage.toString(), parameterMessages);
+        } else {
+            log.info(reqDesc);
+        }
+    }
+    Object ret = joinPoint.proceed();
+    if (logRange.isPrintRes()) {
+        String resDesc = serverLog.resDesc() + &quot; {}&quot;;
+        log.info(resDesc, JSON.toJSONString(ret));
+    }
+    return ret;
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Mon, 04 Mar 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/spring/2019/03/04/Spring-AOP%E7%BB%9F%E4%B8%80%E6%89%93%E5%8D%B0%E6%97%A5%E5%BF%97/</link>
+        <guid isPermaLink="true">http://localhost:4000/spring/2019/03/04/Spring-AOP%E7%BB%9F%E4%B8%80%E6%89%93%E5%8D%B0%E6%97%A5%E5%BF%97/</guid>
+        
+        <category>log</category>
+        
+        
+        <category>Spring</category>
+        
+      </item>
+    
+      <item>
+        <title>fork项目开发</title>
+        <description>&lt;h3 id=&quot;要点&quot;&gt;要点&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;fork原作者的项目&lt;/li&gt;
+  &lt;li&gt;clone自己仓库fork的项目&lt;/li&gt;
+  &lt;li&gt;获取原作者的更新&lt;/li&gt;
+  &lt;li&gt;提交到自己fork的项目&lt;/li&gt;
+  &lt;li&gt;提交pull-requests&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;获取原作者的更新&quot;&gt;获取原作者的更新&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;添加原作者的git地址作为upstream
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;git remote add upstream '原作者git地址'
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;将原作者的更新拉取到本地
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;git fetch upstream '分支名称'
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;将原作者的更新merge到自己本地的当前分支&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 03 Feb 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/git/2019/02/03/fork%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/</link>
+        <guid isPermaLink="true">http://localhost:4000/git/2019/02/03/fork%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/</guid>
+        
+        <category>fork</category>
+        
+        
+        <category>git</category>
+        
+      </item>
+    
+      <item>
+        <title>深入了解volatile</title>
+        <description>&lt;h3 id=&quot;volatile作用&quot;&gt;volatile作用&lt;/h3&gt;
+&lt;p&gt;volatile在并发编程中扮演着重要的角色，volatile是轻量级的synchronized，volatile关键字有两个作用：&lt;/p&gt;
+
+&lt;h4 id=&quot;1保证共享变量的可见性&quot;&gt;(1)保证共享变量的可见性&lt;/h4&gt;
+&lt;p&gt;可见性的意思是当一个线程修改一个共享变量时，另外一个线程能读到这个修改的值。Java内存模型中有主内存和本地内存之分，本地内存持有共享变量的一份副本，线程对共享变量的修改是先修改本地内存的副本，然后再回写到主内存中去。&lt;/p&gt;
+
+&lt;p&gt;可能存在这样的情况，线程A和线程B同时去修改一个共享变量C，假设线程A先对共享变量C做了修改，而此时线程B却没能及时感知到共享变量C已经发生了改变，紧接着B对本地过期的副本数据进行了修改，这造成了共享变量的不可见问题。&lt;/p&gt;
+
+&lt;p&gt;而使用了volatile关键字修改的共享变量，当线程修改了共享变量之后，会立马刷新到主内存中，并且会使其他线程缓存了该地址的数据失效，这就保证了线程之间共享变量的可见性。&lt;/p&gt;
+&lt;h4 id=&quot;2防止指令重排序&quot;&gt;(2)防止指令重排序&lt;/h4&gt;
+&lt;p&gt;volatile关键字的另外一个作用就是防止指令重排序。代码在实际执行过程中，并不全是按照编写的顺序进行执行的，在保证单线程执行结果不变的情况下，编译器或者CPU可能会对指令进行重排序，以提高程序的执行效率。但是在多线程的情况下，指令重排序可能会造成一些问题，最常见的就是双重校验锁单例模式：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;public class SingletonSafe {
+
+    private static volatile SingletonSafe singleton;
+
+    private SingletonSafe() {
+    }
+
+    public static SingletonSafe getSingleton() {
+        if (singleton == null) {
+            synchronized (SingletonSafe.class) {
+                if (singleton == null) {
+                    singleton = new SingletonSafe();
+                }
+            }
+        }
+        return singleton;
+    }
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;复制代码如果没有使用volatile关键字，则可能会出现其他线程获取了一个未初始化完成的singleton对象。&lt;/p&gt;
+
+&lt;h3 id=&quot;volatile实现原理&quot;&gt;volatile实现原理&lt;/h3&gt;
+&lt;h4 id=&quot;1可见性实现原理&quot;&gt;(1)可见性实现原理&lt;/h4&gt;
+&lt;p&gt;对于volatile关键字修饰的变量，当对volatile变量进行写操作的时候，JVM会向处理器发送一条lock前缀的指令，将这个缓存中的变量回写到系统主存中。但是就算写回到内存，如果其他处理器缓存的值还是旧的，再执行计算操作就会有问题，所以在多处理器下，为了保证各个处理器的缓存是一致的，就会实现缓存一致性协议。&lt;/p&gt;
+
+&lt;p&gt;缓存一致性协议：每个处理器通过嗅探在总线上传播的数据来检查自己缓存的值是不是过期了，当处理器发现自己缓存行对应的内存地址被修改，就会将当前处理器的缓存行设置成无效状态，当处理器要对这个数据进行修改操作的时候，会强制重新从系统内存里把数据读到处理器缓存里。&lt;/p&gt;
+
+&lt;p&gt;所以，如果一个变量被volatile所修饰的话，在每次数据变化之后，其值都会被强制刷入主存。而其他处理器的缓存由于遵守了缓存一致性协议，也会把这个变量的值从主存加载到自己的缓存中。这就保证了一个volatile在并发编程中，其值在多个缓存中是可见的。&lt;/p&gt;
+&lt;h4 id=&quot;2防止指令重排序实现原理&quot;&gt;(2)防止指令重排序实现原理&lt;/h4&gt;
+&lt;p&gt;volatile防止指令重排序是通过内存屏障来实现的。内存屏障分为如下三种：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Store Barrier&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Store屏障，是x86的”sfence”指令，强制所有在store屏障指令之前的store指令，都在该store屏障指令执行之前被执行。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Load Barrier&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Load屏障，是x86上的”ifence”指令，强制所有在load屏障指令之后的load指令，都在该load屏障指令执行之后被执行
+Full Barrier
+Full屏障，是x86上的”mfence”指令，复合了load和save屏障的功能。
+Java内存模型中volatile变量在写操作之后会插入一个store屏障，在读操作之前会插入一个load屏障。一个类的final字段会在初始化后插入一个store屏障，来确保final字段在构造函数初始化完成并可被使用时可见。也正是JMM在volatile变量读写前后都插入了内存屏障指令，进而保证了指令的顺序执行。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 12 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/jdk/2019/01/12/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3volatile/</link>
+        <guid isPermaLink="true">http://localhost:4000/jdk/2019/01/12/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3volatile/</guid>
+        
+        <category>volatile</category>
+        
+        
+        <category>JDK</category>
+        
+      </item>
+    
+      <item>
+        <title>ReentrantReadWriteLock解析</title>
+        <description>&lt;p&gt;　　java中锁是个很重要的概念，当然这里的前提是你会涉及并发编程。&lt;/p&gt;
+
+&lt;p&gt;　　除了语言提供的锁关键字 synchronized和volatile之外，jdk还有其他多种实用的锁。&lt;/p&gt;
+
+&lt;p&gt;　　不过这些锁大多都是基于AQS队列同步器。ReadWriteLock 读写锁就是其中一个。&lt;/p&gt;
+
+&lt;p&gt;　　读写锁的含义是，将读锁与写锁分开对待，读锁可以任意个一起读，因为读并不涉及数据变更，而遇到写锁后，所有后续的读写都将被阻塞。这特性有什么用呢？比如我们有一个缓存，我们可以用它来提高访问速度，但是当数据变更时，怎样能保证能读到准确的数据？&lt;/p&gt;
+
+&lt;p&gt;　　在没有读写锁之前，我们可以使用wait/notify机制，我们可以以写锁作为一个同步介质，当写锁被占用时，读只能等待，写操作完成后，通知所有读继续。这看起来不那么好实现！&lt;/p&gt;
+
+&lt;p&gt;　　当有了读写锁后，我们就不需要这么麻烦了，只需要读操作使用读锁，写操作获取写锁操作。大家可能会想，既然都要获取锁，那和其他锁有什么差别呢，一般看到锁咱们都会想到串行，阻塞。但其实读写锁不是这样的。看起来你是每次都获取读锁，但其实单纯的读锁并不会阻塞线程，所以同样是并行无阻，读锁只有在一种情况下会阻塞，那就是写锁被某线程占用时。因为写锁被占用则意味着，数据可能马上发生变化，如果此再允许读操作任意进行的话，多半可能读到写了一半或者是老数据，而这简直太糟了。而写锁则只每次都会真正进行后续操作的阻塞动作，使写操作保证强一致性。&lt;/p&gt;
+
+&lt;p&gt;　　好了，以上就是咱们从概念上来理解读写锁。&lt;/p&gt;
+
+&lt;p&gt;　　而实际上呢？ReadWriteLock只是一个接口，而其实现则可能是n多的。我们就以jdk实现的 ReentrantReadWriteLock 为契机，看一下读写锁的实现吧。&lt;/p&gt;
+
+&lt;p&gt;　　在介绍 ReentrantReadWriteLock 之前，我们要先简单说下 ReentrantLock 重入锁，从字面意思理解，就是可重新进入的锁。那么，到底是什么意思呢？我们想一下，如果我们有2个资源锁可用，那么，如果我在本线程上上锁两次，是不是资源就没有了呢，那第三次进行锁获取的时候，是不是就把自己给锁死了呢？想想应该是这样的，但是为啥平时咱们都遇不到这种情况呢？原因就在于可重入性。可重入的意思是说，如果当前线程进行多次加锁操作，那么无论如何它自己都是可以进入的。简单从实现来说就是，锁会排除当前线程，从而避免自身阻塞。这些需求看起来很理所当然，但是咱们自己实现的时候可能会因为场景不一样，从而不一定需要这种特性呢。syncronized也是一种重入锁。好了，说了这么多，还是没有看到 ReetrantLock是怎么实现的！&lt;/p&gt;
+
+&lt;p&gt;用个不恰当的图描绘下：（该锁是读写分离的，读多于写的场景能够在保证线程安全的同时提供尽可能大的并发能力）&lt;/p&gt;
+
+&lt;p&gt;我们来看下源码就一目了然了。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;/**
+ * Fair version of tryAcquire
+ */
+protected final boolean tryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (!hasQueuedPredecessors() &amp;amp;&amp;amp;
+            compareAndSetState(0, acquires)) {
+            // 第一次进入获取到锁后，标记获得锁的线程，后续判定重入
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    // 重入锁判定，否则失败
+    else if (current == getExclusiveOwnerThread()) {
+        // 最多可重入 int 次
+        int nextc = c + acquires;
+        if (nextc &amp;lt; 0)
+            throw new Error(&quot;Maximum lock count exceeded&quot;);
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　重入锁介绍完后，咱们可以安心的来说说 ReentrantReadWriteLock了。该读写锁也是一种可重入锁。它要实现的特性就是，读读锁无阻塞，写锁必阻塞（包括写读锁/写写锁），读写锁阻塞（需等待读锁释放后才能获取写锁从而保证无脏读）。&lt;/p&gt;
+
+&lt;p&gt;　　从上面可以看出，读和写是两个锁，但是他们的状态却是互相关联的，那怎样设计其数据结构呢？用两个变量去推导往往不太可行，因为其本身就是锁，如果再用两个变量去判定锁状态，那么又如何保证变量自身的可靠性呢？ReentrantReadWriteLock 是通过一个状态变量来控制的，具体为 高16位保存读锁状态，低16位保存写锁状态，而在改变状态时，使用cas保证写入的可靠性。（其实这里可以看出，锁个数不应该超过16位即65536个，这种锁数量已经完全被忽略掉了）。有了数据结构，咱们再看下怎么控制读写互联。读锁的获取，写锁没被占用时，即低位为0时，高位大于0即可代表获取了读锁，所以，读锁是n个可用的。而写锁的获取，则要依赖高低位判定了，高位大于0，即代表还有读锁存在，不能进入，如果高位为0，也不一定可进入，低位不为0则代表有写锁在占用，所以只有高低位都为0时，写锁才可用。&lt;/p&gt;
+
+&lt;p&gt;　　下面，来看下读写锁的具体实现！&lt;/p&gt;
+
+&lt;p&gt;来个例子先:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;public class ReadWriteLockTest {
+
+    private ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
+    /**
+     * 读锁
+     */
+    private Lock r = reentrantReadWriteLock.readLock();
+
+    /**
+     * 写锁
+     */
+    private Lock w = reentrantReadWriteLock.writeLock();
+
+    /**
+     * 执行线程池
+     */
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+
+    @Test
+    public void testReadLock() {
+        for (int i = 0; i &amp;lt; 10; i++) {
+            Thread readWorker = new ReadWorker();
+            executorService.submit(readWorker);
+        }
+        waitForExecutorFinish();
+    }
+
+    @Test
+    public void testWriteLock() {
+        for (int i = 0; i &amp;lt; 10; i++) {
+            Thread writeWorker = new WriteWorker();
+            executorService.submit(writeWorker);
+        }
+        waitForExecutorFinish();
+    }
+
+    @Test
+    public void testReadWriteLock() {
+        for (int i = 0; i &amp;lt; 10; i++) {
+            Thread readWorker = new ReadWorker();
+            Thread writeWorker = new WriteWorker();
+            executorService.submit(readWorker);
+            executorService.submit(writeWorker);
+        }
+        waitForExecutorFinish();
+    }
+
+    /**
+     * 线程模拟完成后，关闭线程池
+     */
+    private void waitForExecutorFinish() {
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(100, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final class ReadWorker extends Thread {
+        @Override
+        public void run() {
+            r.lock();
+            try {
+                SleepUtils.second(1);
+                System.out.println(System.currentTimeMillis() + &quot;: &quot; + Thread.currentThread().getName() + &quot; reading...&quot;);
+                SleepUtils.second(1);
+            }
+            finally {
+                r.unlock();
+            }
+        }
+    }
+
+    private final class WriteWorker extends Thread {
+        @Override
+        public void run() {
+            w.lock();
+            try {
+                SleepUtils.second(1);
+                System.out.println(System.currentTimeMillis() + &quot;: &quot; + Thread.currentThread().getName() + &quot; writing...&quot;);
+                SleepUtils.second(1);
+            }
+            finally {
+                w.unlock();
+            }
+        }
+    }
+
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;　　可以看到 testReadLock(), 无阻塞，立即完成10个读任务！&lt;/p&gt;
+
+&lt;p&gt;　　而 testWriteLock()，则是全部阻塞执行，20秒完成串行10个任务！&lt;/p&gt;
+
+&lt;p&gt;　　而 testReadWriteLock(), 则是 读锁与写锁交替执行，在执行写锁时，所有锁等待，在执行读锁时，可能存在多个锁同时运行！执行结果样例如下:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;1543816105277: pool-1-thread-1 reading...
+1543816107278: pool-1-thread-2 writing...
+1543816109278: pool-1-thread-20 writing...
+1543816111278: pool-1-thread-16 writing...
+1543816113279: pool-1-thread-12 writing...
+1543816115279: pool-1-thread-8 writing...
+1543816117280: pool-1-thread-19 reading...
+1543816117280: pool-1-thread-15 reading...
+1543816119280: pool-1-thread-4 writing...
+1543816121280: pool-1-thread-18 writing...
+1543816123281: pool-1-thread-3 reading...
+1543816123281: pool-1-thread-7 reading...
+1543816125287: pool-1-thread-14 writing...
+1543816127290: pool-1-thread-6 writing...
+1543816129290: pool-1-thread-10 writing...
+1543816131290: pool-1-thread-11 reading...
+1543816131290: pool-1-thread-13 reading...
+1543816131290: pool-1-thread-9 reading...
+1543816131290: pool-1-thread-5 reading...
+1543816131290: pool-1-thread-17 reading...
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　ok, 现象已经展示了，是时候透过现象看本质了！&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;读锁的获取过程 r.lock(), 其实现为 ReadLock！&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;public void lock() {
+    // 调用 AQS 的 acquireShared() 方法，进行统一调度
+    sync.acquireShared(1);
+}
+
+// AQS 获取共享读锁    
+public final void acquireShared(int arg) {
+    // 调用 ReentrantReadWriteLock.Sync.tryAcquireShared(), 定义锁获取方式
+    if (tryAcquireShared(arg) &amp;lt; 0)
+        doAcquireShared(arg);
+}
+
+// 获取读锁，unused 传参未使用，直接使用内置的高位加1方式处理
+protected final int tryAcquireShared(int unused) {
+    /*
+     * Walkthrough:
+     * 1. If write lock held by another thread, fail.
+     * 2. Otherwise, this thread is eligible for
+     *    lock wrt state, so ask if it should block
+     *    because of queue policy. If not, try
+     *    to grant by CASing state and updating count.
+     *    Note that step does not check for reentrant
+     *    acquires, which is postponed to full version
+     *    to avoid having to check hold count in
+     *    the more typical non-reentrant case.
+     * 3. If step 2 fails either because thread
+     *    apparently not eligible or CAS fails or count
+     *    saturated, chain to version with full retry loop.
+     */
+    Thread current = Thread.currentThread();
+    int c = getState();
+    // 写锁使用中，则直接获取失败
+    if (exclusiveCount(c) != 0 &amp;amp;&amp;amp;
+        getExclusiveOwnerThread() != current)
+        return -1;
+    int r = sharedCount(c);
+    // 读锁任意获取，除了超过最大限制
+    if (!readerShouldBlock() &amp;amp;&amp;amp;
+        r &amp;lt; MAX_COUNT &amp;amp;&amp;amp;
+        compareAndSetState(c, c + SHARED_UNIT)) {
+        if (r == 0) {
+            firstReader = current;
+            firstReaderHoldCount = 1;
+        } else if (firstReader == current) {
+            firstReaderHoldCount++;
+        } else {
+            HoldCounter rh = cachedHoldCounter;
+            if (rh == null || rh.tid != getThreadId(current))
+                cachedHoldCounter = rh = readHolds.get();
+            else if (rh.count == 0)
+                readHolds.set(rh);
+            rh.count++;
+        }
+        return 1;
+    }
+    // 对读锁阻塞情况，进行处理
+    return fullTryAcquireShared(current);
+}
+    
+// 获取低位数，即写锁状态值
+static int exclusiveCount(int c) {
+    return c &amp;amp; EXCLUSIVE_MASK; 
+}
+// 获取高位数，即读锁状态值
+static int sharedCount(int c) { 
+    return c &amp;gt;&amp;gt;&amp;gt; SHARED_SHIFT; 
+}
+
+/**
+ * Full version of acquire for reads, that handles CAS misses
+ * and reentrant reads not dealt with in tryAcquireShared.
+ */
+final int fullTryAcquireShared(Thread current) {
+    /*
+     * This code is in part redundant with that in
+     * tryAcquireShared but is simpler overall by not
+     * complicating tryAcquireShared with interactions between
+     * retries and lazily reading hold counts.
+     */
+    HoldCounter rh = null;
+    for (;;) {
+        int c = getState();
+        if (exclusiveCount(c) != 0) {
+            if (getExclusiveOwnerThread() != current)
+                return -1;
+            // else we hold the exclusive lock; blocking here
+            // would cause deadlock.
+        } else if (readerShouldBlock()) {
+            // Make sure we're not acquiring read lock reentrantly
+            if (firstReader == current) {
+                // assert firstReaderHoldCount &amp;gt; 0;
+            } else {
+                if (rh == null) {
+                    rh = cachedHoldCounter;
+                    if (rh == null || rh.tid != getThreadId(current)) {
+                        rh = readHolds.get();
+                        if (rh.count == 0)
+                            readHolds.remove();
+                    }
+                }
+                if (rh.count == 0)
+                    return -1;
+            }
+        }
+        if (sharedCount(c) == MAX_COUNT)
+            throw new Error(&quot;Maximum lock count exceeded&quot;);
+        // 验证通过，cas更新锁状态，使用 SHARED_UNIT 进行高位加1
+        if (compareAndSetState(c, c + SHARED_UNIT)) {
+            if (sharedCount(c) == 0) {
+                firstReader = current;
+                firstReaderHoldCount = 1;
+            } else if (firstReader == current) {
+                firstReaderHoldCount++;
+            } else {
+                if (rh == null)
+                    rh = cachedHoldCounter;
+                if (rh == null || rh.tid != getThreadId(current))
+                    rh = readHolds.get();
+                else if (rh.count == 0)
+                    readHolds.set(rh);
+                rh.count++;
+                cachedHoldCounter = rh; // cache for release
+            }
+            return 1;
+        }
+    }
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;　　以上是获取读锁的过程，其实际控制很简单，只是多了很多的状态统计，所以看起来复杂！&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;下面，来看写锁的获取过程，WriteLock.lock()&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;public void lock() {
+    // AQS获取独占锁
+    sync.acquire(1);
+}
+        
+// AQS 锁调度
+public final void acquire(int arg) {
+    // 如果获取锁失败，则加入到等待队列中
+    if (!tryAcquire(arg) &amp;amp;&amp;amp;
+        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+        selfInterrupt();
+}
+
+// ReentrantReadWriteLock.Sync.tryAcquire(), 写锁获取过程
+protected final boolean tryAcquire(int acquires) {
+    /*
+     * Walkthrough:
+     * 1. If read count nonzero or write count nonzero
+     *    and owner is a different thread, fail.
+     * 2. If count would saturate, fail. (This can only
+     *    happen if count is already nonzero.)
+     * 3. Otherwise, this thread is eligible for lock if
+     *    it is either a reentrant acquire or
+     *    queue policy allows it. If so, update state
+     *    and set owner.
+     */
+    Thread current = Thread.currentThread();
+    int c = getState();
+    int w = exclusiveCount(c);
+    // 如果是0，则说明不存在读写锁，直接成功
+    // 否则分有读锁和有写锁两种情况判断
+    if (c != 0) {
+        // (Note: if c != 0 and w == 0 then shared count != 0)
+        // 存在读锁，或者不是当前线程（重入），则直接失败
+        if (w == 0 || current != getExclusiveOwnerThread())
+            return false;
+        if (w + exclusiveCount(acquires) &amp;gt; MAX_COUNT)
+            throw new Error(&quot;Maximum lock count exceeded&quot;);
+        // Reentrant acquire
+        setState(c + acquires);
+        return true;
+    }
+    // cas 更新 state 
+    if (writerShouldBlock() ||
+        !compareAndSetState(c, c + acquires))
+        return false;
+    setExclusiveOwnerThread(current);
+    return true;
+}
+        
+/**
+ * Creates and enqueues node for current thread and given mode.
+ *
+ * @param mode Node.EXCLUSIVE for exclusive, Node.SHARED for shared
+ * @return the new node
+ */
+private Node addWaiter(Node mode) {
+    Node node = new Node(Thread.currentThread(), mode);
+    // Try the fast path of enq; backup to full enq on failure
+    Node pred = tail;
+    if (pred != null) {
+        node.prev = pred;
+        if (compareAndSetTail(pred, node)) {
+            pred.next = node;
+            return node;
+        }
+    }
+    enq(node);
+    return node;
+}
+
+// AQS 的锁入队列操，从队列中进行锁获取，如果获取失败，则产线一个中断标志
+final boolean acquireQueued(final Node node, int arg) {
+    boolean failed = true;
+    try {
+        boolean interrupted = false;
+        for (;;) {
+            final Node p = node.predecessor();
+            // 这里是公平锁的实现方式，只会从队列头获取锁
+            if (p == head &amp;amp;&amp;amp; tryAcquire(arg)) {
+                setHead(node);
+                p.next = null; // help GC
+                failed = false;
+                return interrupted;
+            }
+            // 阻塞判定，响应中断
+            if (shouldParkAfterFailedAcquire(p, node) &amp;amp;&amp;amp;
+                parkAndCheckInterrupt())
+                interrupted = true;
+        }
+    } finally {
+        if (failed)
+            cancelAcquire(node);
+    }
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;　　ok, 读写锁的获取已经完成，再来看一下释放的过程！&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;读锁的释放 ReadLock.unlock()&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;public void unlock() {
+    // AQS 的释放控制
+    sync.releaseShared(1);
+}
+        
+// AQS 释放锁
+public final boolean releaseShared(int arg) {
+    if (tryReleaseShared(arg)) {
+        doReleaseShared();
+        return true;
+    }
+    return false;
+}
+// ReentrantReadWriteLock.Sync.tryReleaseShared() 自定义释放
+protected final boolean tryReleaseShared(int unused) {
+    Thread current = Thread.currentThread();
+    if (firstReader == current) {
+        // assert firstReaderHoldCount &amp;gt; 0;
+        if (firstReaderHoldCount == 1)
+            firstReader = null;
+        else
+            firstReaderHoldCount--;
+    } else {
+        HoldCounter rh = cachedHoldCounter;
+        if (rh == null || rh.tid != getThreadId(current))
+            rh = readHolds.get();
+        int count = rh.count;
+        if (count &amp;lt;= 1) {
+            readHolds.remove();
+            if (count &amp;lt;= 0)
+                throw unmatchedUnlockException();
+        }
+        --rh.count;
+    }
+    for (;;) {
+        int c = getState();
+        int nextc = c - SHARED_UNIT;
+        // cas更新状态，每次减1，直到为0，锁才算真正释放
+        if (compareAndSetState(c, nextc))
+            // Releasing the read lock has no effect on readers,
+            // but it may allow waiting writers to proceed if
+            // both read and write locks are now free.
+            return nextc == 0;
+    }
+}
+        
+/**
+ * Release action for shared mode -- signals successor and ensures
+ * propagation. (Note: For exclusive mode, release just amounts
+ * to calling unparkSuccessor of head if it needs signal.)
+ */
+private void doReleaseShared() {
+    /*
+     * Ensure that a release propagates, even if there are other
+     * in-progress acquires/releases.  This proceeds in the usual
+     * way of trying to unparkSuccessor of head if it needs
+     * signal. But if it does not, status is set to PROPAGATE to
+     * ensure that upon release, propagation continues.
+     * Additionally, we must loop in case a new node is added
+     * while we are doing this. Also, unlike other uses of
+     * unparkSuccessor, we need to know if CAS to reset status
+     * fails, if so rechecking.
+     */
+    for (;;) {
+        Node h = head;
+        if (h != null &amp;amp;&amp;amp; h != tail) {
+            int ws = h.waitStatus;
+            if (ws == Node.SIGNAL) {
+                if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                    continue;            // loop to recheck cases
+                unparkSuccessor(h);
+            }
+            else if (ws == 0 &amp;amp;&amp;amp;
+                     !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                continue;                // loop on failed CAS
+        }
+        if (h == head)                   // loop if head changed
+            break;
+    }
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ol&gt;
+  &lt;li&gt;读锁的释放, WriteLock.unlock()&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;public void unlock() {
+    // AQS 释放控制
+    sync.release(1);
+}
+// AQS
+public final boolean release(int arg) {
+    if (tryRelease(arg)) {
+        Node h = head;
+        // 释放锁
+        if (h != null &amp;amp;&amp;amp; h.waitStatus != 0)
+            unparkSuccessor(h);
+        return true;
+    }
+    return false;
+}
+// Sync.tryRelease()
+protected final boolean tryRelease(int releases) {
+    if (!isHeldExclusively())
+        throw new IllegalMonitorStateException();
+    int nextc = getState() - releases;
+    // 如果写锁状态为0，则意味着当前线程完全释放锁，将 owner 线各设置为null
+    boolean free = exclusiveCount(nextc) == 0;
+    if (free)
+        setExclusiveOwnerThread(null);
+    setState(nextc);
+    return free;
+}
+    
+/**
+ * Wakes up node's successor, if one exists.
+ *
+ * @param node the node
+ */
+private void unparkSuccessor(Node node) {
+    /*
+     * If status is negative (i.e., possibly needing signal) try
+     * to clear in anticipation of signalling.  It is OK if this
+     * fails or if status is changed by waiting thread.
+     */
+    int ws = node.waitStatus;
+    if (ws &amp;lt; 0)
+        compareAndSetWaitStatus(node, ws, 0);
+
+    /*
+     * Thread to unpark is held in successor, which is normally
+     * just the next node.  But if cancelled or apparently null,
+     * traverse backwards from tail to find the actual
+     * non-cancelled successor.
+     */
+    Node s = node.next;
+    if (s == null || s.waitStatus &amp;gt; 0) {
+        s = null;
+        for (Node t = tail; t != null &amp;amp;&amp;amp; t != node; t = t.prev)
+            if (t.waitStatus &amp;lt;= 0)
+                s = t;
+    }
+    // 调用 LockSupport 释放锁
+    if (s != null)
+        LockSupport.unpark(s.thread);
+}
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;锁降级&lt;/p&gt;
+
+&lt;p&gt;锁降级是指把写锁降级为读锁。如果当前线程，然后将其释放，最后再获取读锁，最后再获取读锁，这种不能称为锁降级！&lt;/p&gt;
+
+&lt;p&gt;锁降级是指把持住当前的写锁，再获取到读锁，随后释放写锁的过程；&lt;/p&gt;
+
+&lt;p&gt;锁降级的两个重要问题：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;为什么拥有了写锁，还要去再获取读锁？&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;既然已经被写锁占有了，还能获取读锁吗？&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;回答完上面两个问题，才算真正明白锁降级的意义所在！&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;再次想获取读锁的目的在于，读和写模块是分开的，而更新操作则可能在读的时候触发的。比如在读的时候发现数据过期了，这时就要调用写操作，而此时读锁又不能释放，所以需要在安全的情况下，释放和重新获取读锁；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在写锁已经被获取的情况下，当前线程的读锁是可重入的，所以读锁对当前线程是开放的。而且，当前线程重新获取读锁后，其他线程的写锁将会被延迟获取，从而更高效地保证了当前线程的运行效率；&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;　　综上，读写锁的简要解析就算完成了。 其主要使用 AQS 的基础组件，进行锁调度！ 使用CAS进行状态的安全设置！ 而锁的阻塞，则是使用 LockSupport 工具组件进行实际阻塞！&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/jdk/2019/01/10/ReentrantReadWriteLock%E8%A7%A3%E6%9E%90/</link>
+        <guid isPermaLink="true">http://localhost:4000/jdk/2019/01/10/ReentrantReadWriteLock%E8%A7%A3%E6%9E%90/</guid>
+        
+        <category>AQS</category>
+        
+        
+        <category>JDK</category>
+        
+      </item>
+    
+      <item>
+        <title>mac安装新版ruby</title>
+        <description>&lt;h3 id=&quot;安装rvm&quot;&gt;安装RVM&lt;/h3&gt;
+&lt;h4 id=&quot;rvm安装页面&quot;&gt;RVM安装页面&lt;/h4&gt;
+&lt;p&gt;1.安装mpapis公钥。但是，正如安装页面所记录的，您可能需要gpg。Mac OS X不附带gpg，因此在安装公钥之前，您需要安装gpg。我用Homebrew安装了gpg ：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;brew install gnupg 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;2.安装完gpg之后，你可以安装mpapis公钥：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;gpg --keyserver hkp://pgp.mit.edu --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;3.安装最新版本的Ruby的RVM&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;curl -sSL https://get.rvm.io | bash -s stable --ruby
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;常用指令&quot;&gt;常用指令&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;ruby rvm 常用指令&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;ruby -v # 查看ruby 版本
+rvm list known # 列出已知的 ruby 版本
+rvm install 2.3.0 # 选择指定 ruby 版本进行更新
+rvm get stable # 更新 rvm
+rvm use 2.2.2 # 切换到指定 ruby 版本
+rvm use 2.2.2 --default # 设置指定 ruby 版本为默认版本
+rvm list # 查询已安装的 ruby 版本
+rvm remove 1.9.2 # 卸载移除 指定 ruby 版本
+
+curl -L https://get.rvm.io | bash -s stable # 安装 rvm 环境
+curl -sSL https://get.rvm.io | bash -s stable --ruby # 默认安装 rvm 最新版本
+curl -sSL https://get.rvm.io | bash -s stable --ruby=2.3.0 # 安装 rvm 指定版本
+source ~/.rvm/scripts/rvm # 载入 rvm
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;Gem&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;gem -v # 查看 gem 版本
+gem source # 查看 gem 配置源
+gem source -l # 查看 gem 配置源目录
+gem sources -a url # 添加 gem 配置源（url 需换成网址）
+gem sources --add url # 添加 gem 配置源（url 需换成网址）
+gem sources -r url # 删除 gem 配置源（url 需换成网址）
+gem sources --remove url # 删除 gem 配置源（url 需换成网址）
+gem update # 更新 所有包
+gem update --system # 更新 Ruby Gems 软件
+
+gem install rake # 安装 rake，从本地或远程服务器
+gem install rake --remote # 安装 rake，从远程服务器
+gem install watir -v 1.6.2 # 安装 指定版本的 watir
+gem install watir --version 1.6.2 # 安装 指定版本的 watir
+gem uninstall rake # 卸载 rake 包
+gem list d # 列出 本地以 d 打头的包
+gem query -n ''[0-9]'' --local # 查找 本地含有数字的包
+gem search log --both # 查找 从本地和远程服务器上查找含有 log 字符串的包
+gem search log --remoter # 查找 只从远程服务器上查找含有 log 字符串的包
+gem search -r log # 查找 只从远程服务器上查找含有log字符串的包
+
+gem help # 提醒式的帮助
+gem help install # 列出 install 命令 帮助
+gem help examples # 列出 gem 命令使用一些例子
+gem build rake.gemspec # 把 rake.gemspec 编译成 rake.gem
+gem check -v pkg/rake-0.4.0.gem # 检测 rake 是否有效
+gem cleanup # 清除 所有包旧版本，保留最新版本
+gem contents rake # 显示 rake 包中所包含的文件
+gem dependency rails -v 0.10.1 # 列出 与 rails 相互依赖的包
+gem environment # 查看 gem 的环境
+
+sudo gem -v # 查看 gem 版本（以管理员权限）
+sudo gem install cocoa pods # 安装 CocoaPods（以管理员权限）
+sudo gem install cocoapods # 安装 CocoaPods（以管理员权限）
+sudo gem install cocoapods --pre # 安装 CocoaPods 至预览版（以管理员权限）
+sudo gem install cocoapods -v 0.39.0 # 安装 CocoaPods 指定版本（以管理员权限）
+sudo gem update cocoapods # 更新 CocoaPods 至最新版（以管理员权限）
+sudo gem update cocoapods --pre # 更新 CocoaPods 至预览版（以管理员权限）
+sudo gem uninstall cocoapods -v 0.39.0 # 移除 CocoaPods 指定版本（以管理员权限）
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;pod&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;pod setup # CocoaPods 将信息下载到~/.cocoapods/repos 目录下。如果安装 CocoaPods 时不执行此命令，在初次执行 pod intall 命令时，系统也会自动执行该指令
+pod --version # 检查 CocoaPods 是否安装成功及其版本号
+pod install # 安装 CocoaPods 的配置文件 Podfile
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Thu, 03 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tools/2019/01/03/mac%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88ruby/</link>
+        <guid isPermaLink="true">http://localhost:4000/tools/2019/01/03/mac%E5%AE%89%E8%A3%85%E6%96%B0%E7%89%88ruby/</guid>
+        
+        <category>ruby</category>
+        
+        
+        <category>tools</category>
+        
+      </item>
+    
+  </channel>
+</rss>
