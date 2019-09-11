@@ -1,0 +1,6 @@
+I"�<h3 id="1部署单机redis">1、部署单机redis</h3>
+<h4 id="1下载redis安装包">（1）下载redis安装包</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>wget http://download.redis.io/releases/redis-4.0.10.tar.gz
+</pre></td></tr></tbody></table></code></pre></div></div>
+:ET
