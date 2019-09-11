@@ -1,0 +1,7 @@
+I"6<h3 id="安装rvm">安装RVM</h3>
+<h4 id="rvm安装页面">RVM安装页面</h4>
+<p>1.安装mpapis公钥。但是，正如安装页面所记录的，您可能需要gpg。Mac OS X不附带gpg，因此在安装公钥之前，您需要安装gpg。我用Homebrew安装了gpg ：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>brew install gnupg 
+</pre></td></tr></tbody></table></code></pre></div></div>
+:ET

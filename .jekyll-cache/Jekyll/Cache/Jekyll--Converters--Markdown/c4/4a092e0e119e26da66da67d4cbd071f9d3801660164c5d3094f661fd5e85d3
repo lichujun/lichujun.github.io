@@ -1,0 +1,24 @@
+I"P<h3 id="要点">要点</h3>
+<ul>
+  <li>fork原作者的项目</li>
+  <li>clone自己仓库fork的项目</li>
+  <li>获取原作者的更新</li>
+  <li>提交到自己fork的项目</li>
+  <li>提交pull-requests</li>
+</ul>
+
+<h3 id="获取原作者的更新">获取原作者的更新</h3>
+<ul>
+  <li>添加原作者的git地址作为upstream
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>git remote add upstream '原作者git地址'
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+  <li>将原作者的更新拉取到本地
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>git fetch upstream '分支名称'
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+  <li>将原作者的更新merge到自己本地的当前分支</li>
+</ul>
+:ET

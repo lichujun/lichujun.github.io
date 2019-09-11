@@ -1,0 +1,3 @@
+I"�<h3 id="volatile作用">volatile作用</h3>
+<p>volatile在并发编程中扮演着重要的角色，volatile是轻量级的synchronized，volatile关键字有两个作用：</p>
+:ET
