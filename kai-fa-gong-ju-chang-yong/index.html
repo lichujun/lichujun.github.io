@@ -1,0 +1,199 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>开发工具常用 | rokhan</title>
+<link rel="shortcut icon" href="https://rokhan.eu.org/favicon.ico?v=1619423861560">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://rokhan.eu.org/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="开发工具常用 | rokhan - Atom Feed" href="https://rokhan.eu.org/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="iTerm切换zsh
+brew install zsh
+sudo sh -c &quot;echo $(which zsh) &gt;&gt; /etc/shells&quot;
+chsh -s $(which zsh)
+
+换回bash
+c..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://rokhan.eu.org">
+  <img class="avatar" src="https://rokhan.eu.org/images/avatar.png?v=1619423861560" alt="">
+  </a>
+  <h1 class="site-title">
+    rokhan
+  </h1>
+  <p class="site-description">
+    世界很大，走走停停。
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              开发工具常用
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-04-26
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h3 id="iterm切换zsh">iTerm切换zsh</h3>
+<pre><code class="language-bash">brew install zsh
+sudo sh -c &quot;echo $(which zsh) &gt;&gt; /etc/shells&quot;
+chsh -s $(which zsh)
+</code></pre>
+<p>换回bash</p>
+<pre><code class="language-bash">chsh -s /bin/bash
+</code></pre>
+<h3 id="brew太慢">brew太慢</h3>
+<pre><code class="language-bash"># 替换 Homebrew
+git -C &quot;$(brew --repo)&quot; remote set-url origin https://mirrors.ustc.edu.cn/brew.git
+
+# 替换 Homebrew Core
+git -C &quot;$(brew --repo homebrew/core)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git
+
+# 替换 Homebrew Cask
+git -C &quot;$(brew --repo homebrew/cask)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+# 替换 Homebrew-bottles
+# 对于 bash 用户：
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.bash_profile
+source ~/.bash_profile
+# 对于 zsh 用户：
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.zshrc
+source ~/.zshrc
+</code></pre>
+<h3 id="docker太慢">docker太慢</h3>
+<pre><code class="language-json">{ 
+&quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;] 
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#iterm%E5%88%87%E6%8D%A2zsh">iTerm切换zsh</a></li>
+<li><a href="#brew%E5%A4%AA%E6%85%A2">brew太慢</a></li>
+<li><a href="#docker%E5%A4%AA%E6%85%A2">docker太慢</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://rokhan.eu.org/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
