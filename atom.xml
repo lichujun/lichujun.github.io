@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>http://rokhan.eu.org</id>
     <title>rokhan</title>
-    <updated>2021-04-26T07:20:00.633Z</updated>
+    <updated>2021-04-26T07:27:01.087Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="http://rokhan.eu.org"/>
     <link rel="self" href="http://rokhan.eu.org/atom.xml"/>
@@ -10,4 +10,43 @@
     <logo>http://rokhan.eu.org/images/avatar.png</logo>
     <icon>http://rokhan.eu.org/favicon.ico</icon>
     <rights>All rights reserved 2021, rokhan</rights>
+    <entry>
+        <title type="html"><![CDATA[开发工具常用]]></title>
+        <id>http://rokhan.eu.org/post/kai-fa-gong-ju-chang-yong/</id>
+        <link href="http://rokhan.eu.org/post/kai-fa-gong-ju-chang-yong/">
+        </link>
+        <updated>2021-04-26T07:23:46.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="iterm切换zsh">iTerm切换zsh</h3>
+<pre><code class="language-bash">brew install zsh
+sudo sh -c &quot;echo $(which zsh) &gt;&gt; /etc/shells&quot;
+chsh -s $(which zsh)
+</code></pre>
+<p>换回bash</p>
+<pre><code class="language-bash">chsh -s /bin/bash
+</code></pre>
+<h3 id="brew太慢">brew太慢</h3>
+<pre><code class="language-bash"># 替换 Homebrew
+git -C &quot;$(brew --repo)&quot; remote set-url origin https://mirrors.ustc.edu.cn/brew.git
+
+# 替换 Homebrew Core
+git -C &quot;$(brew --repo homebrew/core)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git
+
+# 替换 Homebrew Cask
+git -C &quot;$(brew --repo homebrew/cask)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+# 替换 Homebrew-bottles
+# 对于 bash 用户：
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.bash_profile
+source ~/.bash_profile
+# 对于 zsh 用户：
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.zshrc
+source ~/.zshrc
+</code></pre>
+<h3 id="docker太慢">docker太慢</h3>
+<pre><code class="language-json">{ 
+&quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;] 
+}
+</code></pre>
+]]></content>
+    </entry>
 </feed>

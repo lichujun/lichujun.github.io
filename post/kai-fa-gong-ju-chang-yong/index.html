@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>rokhan</title>
+<title>开发工具常用 | rokhan</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,8 +18,14 @@
 
 
 
-    <meta name="description" content="世界很大，走走停停。">
-    
+    <meta name="description" content="iTerm切换zsh
+brew install zsh
+sudo sh -c &quot;echo $(which zsh) &gt;&gt; /etc/shells&quot;
+chsh -s $(which zsh)
+
+换回bash
+c..." />
+    <meta name="keywords" content="" />
   </head>
   <body>
     <div id="app" class="main">
@@ -89,27 +95,50 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="http://rokhan.eu.org/post/kai-fa-gong-ju-chang-yong/">
-                  <h2 class="post-title">开发工具常用</h2>
-                </a>
-                <div class="post-date">
-                  2021-04-26
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
+          <div class="post-detail">
+            <h2 class="post-title">开发工具常用</h2>
+            <div class="post-date">2021-04-26</div>
+            
+            <div class="post-content" v-pre>
+              <h3 id="iterm切换zsh">iTerm切换zsh</h3>
+<pre><code class="language-bash">brew install zsh
+sudo sh -c &quot;echo $(which zsh) &gt;&gt; /etc/shells&quot;
+chsh -s $(which zsh)
+</code></pre>
+<p>换回bash</p>
+<pre><code class="language-bash">chsh -s /bin/bash
+</code></pre>
+<h3 id="brew太慢">brew太慢</h3>
+<pre><code class="language-bash"># 替换 Homebrew
+git -C &quot;$(brew --repo)&quot; remote set-url origin https://mirrors.ustc.edu.cn/brew.git
 
-          <div class="pagination-container">
-  
-  
-</div>
+# 替换 Homebrew Core
+git -C &quot;$(brew --repo homebrew/core)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git
+
+# 替换 Homebrew Cask
+git -C &quot;$(brew --repo homebrew/cask)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
+
+# 替换 Homebrew-bottles
+# 对于 bash 用户：
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.bash_profile
+source ~/.bash_profile
+# 对于 zsh 用户：
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.zshrc
+source ~/.zshrc
+</code></pre>
+<h3 id="docker太慢">docker太慢</h3>
+<pre><code class="language-json">{ 
+&quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;] 
+}
+</code></pre>
+
+            </div>
+            
+            
+
+            
+
+          </div>
 
         </div>
       </div>
