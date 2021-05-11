@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>iterm2支持rzsz | rokhan</title>
+<meta name="description" content="世界很大，走走停停。">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://rokhan.eu.org/favicon.ico?v=1620720187647">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://rokhan.eu.org/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://rokhan.eu.org">
+        <img class="avatar" src="https://rokhan.eu.org/images/avatar.png?v=1620720187647" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://rokhan.eu.org">
+        <h1 class="site-title">rokhan</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">iterm2支持rzsz</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2021-05-11</span>
+            
+          </div>
+          <div class="post-content">
+            <h3 id="通过brew安装lrzsz">通过brew安装lrzsz</h3>
+<pre><code>brew install lrzsz
+</code></pre>
+<h3 id="添加lrzsz配置文件">添加lrzsz配置文件</h3>
+<p>进入到／usr/local/bin 目录下<br>
+cd /usr/local/bin<br>
+在／usr/loal/bin 目录下创建两个文件<br>
+vi iterm2-recv-zmodem.sh<br>
+vi iterm2-send-zmodem.sh<br>
+将以下内容分别写入到上面两个文件</p>
+<pre><code>#!/bin/bash
+# Author: Matt Mastracci (matthew@mastracci.com)
+# AppleScript from http://stackoverflow.com/questions/4309087/cancel-button-on-osascript-in-a-bash-script
+# licensed under cc-wiki with attribution required
+# Remainder of script public domain
+osascript -e 'tell application &quot;iTerm2&quot; to version' &gt; /dev/null 2&gt;&amp;1 &amp;&amp; NAME=iTerm2 || NAME=iTerm
+if [[ $NAME = &quot;iTerm&quot; ]]; then
+	FILE=`osascript -e 'tell application &quot;iTerm&quot; to activate' -e 'tell application &quot;iTerm&quot; to set thefile to choose folder with prompt &quot;Choose a folder to place received files in&quot;' -e &quot;do shell script (\&quot;echo \&quot;&amp;(quoted form of POSIX path of thefile as Unicode text)&amp;\&quot;\&quot;)&quot;`
+else
+	FILE=`osascript -e 'tell application &quot;iTerm2&quot; to activate' -e 'tell application &quot;iTerm2&quot; to set thefile to choose folder with prompt &quot;Choose a folder to place received files in&quot;' -e &quot;do shell script (\&quot;echo \&quot;&amp;(quoted form of POSIX path of thefile as Unicode text)&amp;\&quot;\&quot;)&quot;`
+fi
+if [[ $FILE = &quot;&quot; ]]; then
+	echo Cancelled.
+	# Send ZModem cancel
+	echo -e \\x18\\x18\\x18\\x18\\x18
+	sleep 1
+	echo
+	echo \# Cancelled transfer
+else
+	cd &quot;$FILE&quot;
+	/usr/local/bin/rz -E -e -b
+	sleep 1
+	echo
+	echo
+	echo \# Sent \-\&gt; $FILE
+fi
+</code></pre>
+<pre><code>#!/bin/bash
+# Author: Matt Mastracci (matthew@mastracci.com)
+# AppleScript from http://stackoverflow.com/questions/4309087/cancel-button-on-osascript-in-a-bash-script
+# licensed under cc-wiki with attribution required
+# Remainder of script public domain
+osascript -e 'tell application &quot;iTerm2&quot; to version' &gt; /dev/null 2&gt;&amp;1 &amp;&amp; NAME=iTerm2 || NAME=iTerm
+if [[ $NAME = &quot;iTerm&quot; ]]; then
+	FILE=`osascript -e 'tell application &quot;iTerm&quot; to activate' -e 'tell application &quot;iTerm&quot; to set thefile to choose file with prompt &quot;Choose a file to send&quot;' -e &quot;do shell script (\&quot;echo \&quot;&amp;(quoted form of POSIX path of thefile as Unicode text)&amp;\&quot;\&quot;)&quot;`
+else
+	FILE=`osascript -e 'tell application &quot;iTerm2&quot; to activate' -e 'tell application &quot;iTerm2&quot; to set thefile to choose file with prompt &quot;Choose a file to send&quot;' -e &quot;do shell script (\&quot;echo \&quot;&amp;(quoted form of POSIX path of thefile as Unicode text)&amp;\&quot;\&quot;)&quot;`
+fi
+if [[ $FILE = &quot;&quot; ]]; then
+	echo Cancelled.
+	# Send ZModem cancel
+	echo -e \\x18\\x18\\x18\\x18\\x18
+	sleep 1
+	echo
+	echo \# Cancelled transfer
+else
+	/usr/local/bin/sz &quot;$FILE&quot; -e -b
+	sleep 1
+	echo
+	echo \# Received $FILE
+fi
+</code></pre>
+<h3 id="iterm2配置添加rz-sz功能">iTerm2配置添加rz、sz功能</h3>
+<p>点击 iTerm2 的设置界面 Perference-&gt; Profiles -&gt; Default -&gt; Advanced -&gt; Triggers 的 Edit 按钮，添加配置</p>
+<pre><code>Regular expression: rz waiting to receive.\*\*B0100
+Action: Run Silent Coprocess
+Parameters: /usr/local/bin/iterm2-send-zmodem.sh
+Regular expression: \*\*B00000000000000
+Action: Run Silent Coprocess
+Parameters: /usr/local/bin/iterm2-recv-zmodem.sh
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://rokhan.eu.org/1yUvLypGP/">
+              <h3 class="post-title">
+                下一篇：lsof命令
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">世界很大，走走停停。</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+   | <a class="rss" href="https://rokhan.eu.org/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
