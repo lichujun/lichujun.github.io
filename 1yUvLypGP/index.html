@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>lsof命令 | rokhan</title>
+<meta name="description" content="世界很大，走走停停。">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://rokhan.eu.org/favicon.ico?v=1620720059174">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://rokhan.eu.org/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://rokhan.eu.org">
+        <img class="avatar" src="https://rokhan.eu.org/images/avatar.png?v=1620720059174" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://rokhan.eu.org">
+        <h1 class="site-title">rokhan</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+          <h2 class="post-title">lsof命令</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2021-05-11</span>
+            
+          </div>
+          <div class="post-content">
+            <p>lsof(list open files)是一个查看进程打开的文件的工具。</p>
+<p>在 linux 系统中，一切皆文件。通过文件不仅仅可以访问常规数据，还可以访问网络连接和硬件。所以 lsof 命令不仅可以查看进程打开的文件、目录，还可以查看进程监听的端口等 socket 相关的信息。</p>
+<h3 id="常用选项">常用选项</h3>
+<p>-a 指示其它选项之间为与的关系</p>
+<p>-c &lt;进程名&gt; 输出指定进程所打开的文件</p>
+<p>-d &lt;文件描述符&gt; 列出占用该文件号的进程<br>
++d &lt;目录&gt;  输出目录及目录下被打开的文件和目录(不递归)</p>
+<p>+D &lt;目录&gt;  递归输出及目录下被打开的文件和目录</p>
+<p>-i &lt;条件&gt;  输出符合条件与网络相关的文件</p>
+<p>-n 不解析主机名</p>
+<p>-p &lt;进程号&gt; 输出指定 PID 的进程所打开的文件</p>
+<p>-P 不解析端口号</p>
+<p>-t 只输出 PID</p>
+<p>-u 输出指定用户打开的文件</p>
+<p>-U 输出打开的 UNIX domain socket 文件</p>
+<p>-h 显示帮助信息</p>
+<p>-v 显示版本信息</p>
+<h3 id="基本输出">基本输出</h3>
+<p>COMMAND：程序的名称</p>
+<p>PID：进程标识符</p>
+<p>USER：进程所有者</p>
+<p>FD：文件描述符，应用程序通过文件描述符识别该文件</p>
+<blockquote>
+<p>FD 列中的常见内容有 cwd、rtd、txt、mem 和一些数字等等。其中 cwd 表示当前的工作目录；rtd 表示根目录；txt 表示程序的可执行文件；mem 表示内存映射文件，还有一部分 FD 是以数字表示的，比如标准输入输出文件。</p>
+<p>数字后面的字母表示进程对该文件的读写模式，u 表示该文件被打开并处于读取/写入模式。除了 u，还有 r 表示只读模式，w 表示只写模式，还可以同时应用 W 表示该进程拥有对文件写操作的锁。</p>
+</blockquote>
+<p>TYPE：文件类型，如 DIR、REG 等</p>
+<blockquote>
+<p>TYPE 列中常见的 REG 和 DIR 分别表示普通文件和目录。而 CHR 和 BLK 则分别表示字符和块设备，unix、fifo 和 IPv4/IPv6 分别表示 UNIX domain 套接字、先进先出(FIFO)队列和 IPv4/IPv6 套接字。</p>
+</blockquote>
+<p>DEVICE：以逗号分隔设备编号</p>
+<p>SIZE：文件的大小(bytes)</p>
+<p>NODE：索引节点(文件在磁盘上的标识)</p>
+<p>NAME：打开文件的确切名称</p>
+<h3 id="常用命令">常用命令</h3>
+<h4 id="查看哪些进程打开了某个目录及目录下的文件">查看哪些进程打开了某个目录及目录下的文件</h4>
+<p>这里分两种情况，+d 选项不执行递归查询，只查找那些打开了指定目录以及指定目录下文件和目录的进程，比如：</p>
+<pre><code>lsof +d /var/log
+</code></pre>
+<p>而 +D 选项则会对指定的目录进行递归：</p>
+<pre><code>lsof +D /var/log
+</code></pre>
+<h4 id="查看某个进程打开的所有文件">查看某个进程打开的所有文件</h4>
+<p>通过 -p 选项并指定进程的 PID 可以输出该进程打开的所有文件。比如我们想要查看 cron 程序打开的文件，可以先用 ps -C cron 命令查出进程的 PID：</p>
+<p>然后把该 PID 传递给 lsof 命令的 -p 选项：</p>
+<pre><code>lsof -p 1152
+</code></pre>
+<h4 id="组合多个选项">组合多个选项</h4>
+<p>如果为 lsof 命令指定多个选项，这些选项间默认是或的关系。也就是说满足任何一个选项的结果都会被输出。可以添加额外的 -a 选项，它的作用就是让其它选项之间的关系变为与，比如下面的命令：</p>
+<pre><code>lsof -a -p $$ -d 0,1,2
+</code></pre>
+<p>其中的 -p 选项指定了当前进程的 PID，而 -d 选项则用来指定进程打开的文件描述符(可以通过逗号分隔多个文件描述符)。添加 -a 选项后，结果输出为当前进程打开的文件描述符为 0、1、2 的文件。</p>
+<h4 id="查看指定名称的程序打开的文件">查看指定名称的程序打开的文件</h4>
+<p>通过 -c 选项可以匹配进程运行的程序(可执行文件)名称。比如我们要查找以字母 cr 开头的程序打开的文件列表：</p>
+<pre><code>lsof -c cr
+</code></pre>
+<p>还可以同时指定多个 -c 选项，它们之间是或的关系。<br>
+如果想对 -c 选项的条件取反，只要在字符串前添加符号 ^ 就可以了，比如：</p>
+<pre><code>lsof -c ^cr
+</code></pre>
+<p>-c 选项也支持正则表达式，比如下面的命令可以过滤出以 cra 和 cro 开头的程序打开的文件：</p>
+<pre><code>lsof -c /cr[ao]/
+</code></pre>
+<h4 id="查看被打开的与网络相关的文件">查看被打开的与网络相关的文件</h4>
+<p>-i 选项用来查看被打开的和网络相关的文件，其参数的格式如下：</p>
+<p>[46][protocol][@hostname|hostaddr][:service|port]</p>
+<ul>
+<li>
+<p>46 表示 IP 协议的版本</p>
+</li>
+<li>
+<p>protocol 表示网络协议的名称，比如 TCP 或 UDP</p>
+</li>
+<li>
+<p>hostname 或 hostaddr 表示主机地址</p>
+</li>
+<li>
+<p>service 指 /etc/services 中的名称，比如 smtp 或多个服务的列表</p>
+</li>
+<li>
+<p>port 表示端口号，可以指定一个或多个</p>
+</li>
+</ul>
+<p>-i 选项默认会同时输出 IPv4 和 IPv6 打开的文件：</p>
+<pre><code>lsof -i
+</code></pre>
+<p>只列出 IPv4 或 IPv6 打开的文件</p>
+<pre><code>lsof -i 4
+lsof -i 6
+</code></pre>
+<p>列出与 22 号端口相关的文件</p>
+<pre><code>lsof -i:22
+</code></pre>
+<p>列出指定范围内被打开的 TCP 端口</p>
+<pre><code>lsof -i TCP:1-1024
+</code></pre>
+<h4 id="查看被打开的-unix-domain-socket-文件">查看被打开的 UNIX domain socket 文件</h4>
+<p>-U 选项输出打开的 UNIX domain socket 文件，这里我们结合 -c 选项来查看 ssh 服务打开的 UNIX domain socket 文件：</p>
+<pre><code>lsof -a -c sshd -U
+</code></pre>
+<h4 id="查看某个用户打开的所有文件">查看某个用户打开的所有文件</h4>
+<p>-u 选项可以指定用户名或 user ID，并且和 -c 选项一样，可以通过逗号分隔多个用户名称或 user ID，也可以通过符号 ^ 对条件取反。</p>
+<p>查看某个用户打开的所有文件</p>
+<pre><code>lsof -u root
+</code></pre>
+<p>查看用户 nick 打开的网络相关的文件</p>
+<pre><code>lsof -a -i -u nick
+</code></pre>
+<p>排除某个用户，在有排除条件时，不需要指定 -a 选项</p>
+<pre><code>lsof -i -u ^nick
+</code></pre>
+<p>杀掉某个用户打开了文件的所有进程，该命令中的 -t 选项让 lsof 命令只输出进程的 PID</p>
+<pre><code>kill -9 $(lsof -t -u nick)
+</code></pre>
+<h4 id="统计系统打开的文件总数">统计系统打开的文件总数</h4>
+<pre><code>lsof -P -n | wc -l
+</code></pre>
+<blockquote>
+<p>命令中的 -P 选项表示不解析端口号，-n 选项表示不解析主机名，这两个选项主要的目的是为了提升 lsof 命令的执行速度。wc -l 命令则用来统计 lsof 命令输出的行数。</p>
+</blockquote>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://rokhan.eu.org/kai-fa-gong-ju-chang-yong/">
+              <h3 class="post-title">
+                下一篇：开发工具常用
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">世界很大，走走停停。</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+   | <a class="rss" href="https://rokhan.eu.org/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
