@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rokhan.eu.org</id>
     <title>rokhan</title>
-    <updated>2021-05-11T08:31:02.190Z</updated>
+    <updated>2021-07-16T10:35:24.758Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://rokhan.eu.org"/>
     <link rel="self" href="https://rokhan.eu.org/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://rokhan.eu.org/images/avatar.png</logo>
     <icon>https://rokhan.eu.org/favicon.ico</icon>
     <rights>All rights reserved 2021, rokhan</rights>
+    <entry>
+        <title type="html"><![CDATA[本地安装kafka集群]]></title>
+        <id>https://rokhan.eu.org/Ijsy7LdzT/</id>
+        <link href="https://rokhan.eu.org/Ijsy7LdzT/">
+        </link>
+        <updated>2021-07-16T10:33:11.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[awk命令]]></title>
         <id>https://rokhan.eu.org/NmFO2LyqQ/</id>
