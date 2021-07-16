@@ -5,7 +5,7 @@
     
 <meta charset="utf-8" >
 
-<title>开发工具常用 | rokhan</title>
+<title>薅jd羊毛 | rokhan</title>
 <meta name="description" content="世界很大，走走停停。">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -74,15 +74,15 @@
       <div class="content-container">
         <div class="post-detail">
           
-          <h2 class="post-title">开发工具常用</h2>
+          <h2 class="post-title">薅jd羊毛</h2>
           <div class="post-info post-detail-info">
-            <span><i class="icon-calendar-outline"></i> 2021-04-26</span>
+            <span><i class="icon-calendar-outline"></i> 2021-07-16</span>
             
               <span>
                 <i class="icon-pricetags-outline"></i>
                 
-                  <a href="https://rokhan.eu.org/KD8w50PPs/">
-                    工具
+                  <a href="https://rokhan.eu.org/E7y8FICD0/">
+                    日常
                     
                   </a>
                 
@@ -90,42 +90,68 @@
             
           </div>
           <div class="post-content">
-            <h3 id="iterm切换zsh">iTerm切换zsh</h3>
-<pre><code class="language-bash">brew install zsh
-sudo sh -c &quot;echo $(which zsh) &gt;&gt; /etc/shells&quot;
-chsh -s $(which zsh)
+            <h3 id="安装青龙">安装青龙</h3>
+<pre><code>docker run -dit \
+-v $pwd/ql/config:/ql/config \
+-v $pwd/ql/log:/ql/log \
+-v $pwd/ql/db:/ql/db \
+-v $pwd/ql/scripts:/ql/scripts \
+-v $pwd/ql/jbot:/ql/jbot \
+-e ENABLE_HANGUP=true \
+-e ENABLE_WEB_PANEL=true \
+--name qinglong \
+--hostname qinglong \
+--net=host \
+--restart always \
+lichujun/qinglong
 </code></pre>
-<p>换回bash</p>
-<pre><code class="language-bash">chsh -s /bin/bash
+<p>添加脚本</p>
+<pre><code>docker exec -it qinglong ql repo https://ghproxy.com/https://github.com/chinnkarahoi/jd_scripts.git &quot;jd_|jx_|getJDCookie&quot; &quot;activity|backUp&quot; &quot;^jd[^_]|USER&quot;
 </code></pre>
-<h3 id="brew太慢">brew太慢</h3>
-<pre><code class="language-bash"># 替换 Homebrew
-git -C &quot;$(brew --repo)&quot; remote set-url origin https://mirrors.ustc.edu.cn/brew.git
+<h3 id="安装花语">安装花语</h3>
+<p>下载百度网盘jd的文件</p>
+<pre><code>chmod 777 JDC
+./JDC
+</code></pre>
+<pre><code>vi config.toml
 
-# 替换 Homebrew Core
-git -C &quot;$(brew --repo homebrew/core)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git
-
-# 替换 Homebrew Cask
-git -C &quot;$(brew --repo homebrew/cask)&quot; remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
-
-# 替换 Homebrew-bottles
-# 对于 bash 用户：
-echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.bash_profile
-source ~/.bash_profile
-# 对于 zsh 用户：
-echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' &gt;&gt; ~/.zshrc
-source ~/.zshrc
+#公告设置
+[app]
+    path            = &quot;/ql&quot; #青龙面板映射文件夹名称,一般为QL或ql
+    QLip            = &quot;http://127.0.0.1&quot; #青龙面板的ip
+    QLport          = &quot;5700&quot; #青龙面板的端口，默认为5700
+    notice          = &quot;使用京东扫描二维码登录&quot; #公告/说明
+    pushQr          = &quot;&quot; #消息推送二维码链接
+    logName         = &quot;chinnkarahoi_jd_scripts_jd_bean_change&quot; #日志脚本名称
+    allowAdd        = 0 #是否允许添加账号（0允许1不允许）不允许添加时则只允许已有账号登录
+    allowNum        = 99 #允许添加账号的最大数量,-1为不限制
+#web服务设置
+[server]
+    address         = &quot;:5701&quot; #端口号设置
+    serverRoot      = &quot;public&quot; #静态目录设置，请勿更改
+    serverAgent     = &quot;JDCookie&quot; #服务端UA
+#模板设置
+[viewer]
+    Delimiters      = [&quot;${&quot;, &quot;}&quot;] #模板标签，请勿更改
 </code></pre>
-<h3 id="docker太慢">docker太慢</h3>
-<pre><code class="language-json">{ 
-&quot;registry-mirrors&quot;: [&quot;https://docker.mirrors.ustc.edu.cn&quot;] 
-}
+<p>将QL修该为“/ql”注意大小写</p>
+<p>配置前端</p>
+<pre><code>cd public
 </code></pre>
+<p>将dist.zip解压到此处</p>
 
           </div>
         </div>
 
         
+          <div class="next-post">
+            <a class="purple-link" href="https://rokhan.eu.org/Ijsy7LdzT/">
+              <h3 class="post-title">
+                下一篇：本地安装kafka集群
+              </h3>
+            </a>
+          </div>
+          
       </div>
 
       
